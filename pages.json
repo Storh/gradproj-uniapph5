@@ -106,64 +106,45 @@
 		}, {
 			"path": "pages/push/edit",
 			"style": {}
-		}
-	    ,{
-            "path" : "pages/login/wxlogin/wxlogin",
-            "style" : {}
-        },
-		{
-			"path": "pages/login/wxlogin/bandphone",
+		}, {
+			"path": "pages/mine/minebycon",
 			"style": {}
-		}
-        ,{
-            "path" : "pages/mine/minebycon",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/content/join",
-            "style" : {
+		}, {
+			"path": "pages/content/join",
+			"style": {
 				"navigationBarTitleText": "参加活动"
 			}
-        }
-        ,{
-            "path" : "pages/push/activity",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/edit/edit",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/edit/activity",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/jubao/jubao",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/mine/pack/pack",
-            "style" : {
+		}, {
+			"path": "pages/push/activity",
+			"style": {}
+		}, {
+			"path": "pages/edit/edit",
+			"style": {}
+		}, {
+			"path": "pages/edit/activity",
+			"style": {}
+		}, {
+			"path": "pages/jubao/jubao",
+			"style": {}
+		}, {
+			"path": "pages/mine/pack/pack",
+			"style": {
 				"enablePullDownRefresh": true
 			}
-        }
-        ,{
-            "path" : "pages/push/pack",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/edit/pack",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/content/pack/pack",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/content/pack/order",
-            "style" : {}
-        }
-    ],
+		}, {
+			"path": "pages/push/pack",
+			"style": {}
+		}, {
+			"path": "pages/edit/pack",
+			"style": {}
+		}, {
+			"path": "pages/content/pack/pack",
+			"style": {}
+		}, {
+			"path": "pages/content/pack/order",
+			"style": {}
+		}
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "虹桥正荣府",

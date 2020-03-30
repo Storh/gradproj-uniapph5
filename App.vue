@@ -5,7 +5,7 @@
 			// 隐藏底边栏
 			uni.hideTabBar({});
 			// 验证用户是否登录
-			this.checkLogin();
+			// this.checkLogin();
 		},
 		globalData: {
 			// 用于全局分别当前页面类型是首页还是乐享
@@ -16,7 +16,7 @@
 			checkLogin() {
 				const userInfo = uni.getStorageSync('userData');
 				if (userInfo) {
-					// 用户已登录过
+					// 必须用户曾经的信息和token都存在才算用户已登录过
 					User.getInfo(userInfo.user_id).then(res => {
 						uni.setStorageSync('userData', res.data.data);
 						// 是否已经添加小区信息
@@ -73,7 +73,6 @@
 			});
 		}
 	}
-	};
 </script>
 
 <style>

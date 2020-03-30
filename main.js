@@ -15,6 +15,10 @@ Vue.config.productionTip = false
 // Vue.prototype.DevSerUrl = 'http://192.168.16.66:8080/ailin/serve'
 // Vue.prototype.DevSerUrl = 'http://192.168.16.15:8080/ailin/serve'
 Vue.prototype.DevSerUrl = 'http://www.chinaclick.com.cn/ailin'
+// 毕设专用接口
+Vue.prototype.GradProUrl = 'http://localhost:7001'
+
+
 Vue.prototype.ManagePading = '@Dm1n:'
 Vue.prototype.ManageHimg = '/static/icon/home.png'
 Vue.prototype.ManageName = '社区居委'

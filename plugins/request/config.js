@@ -14,16 +14,15 @@ export const globalInterceptor = {
  */
 export const config = {
 	// baseURL: "http://39.105.169.18:7300/mock/5db865ea4be0621d2109ae8a",
-	// baseURL: "http://192.168.16.66:8080/ailin/serve",
-	baseURL: "http://www.chinaclick.com.cn/ailin",
+	baseURL: "http://localhost:7001",
+	// baseURL: "http://www.chinaclick.com.cn/ailin",
 	// baseURL: "http://www.chinaclick.com.cn/ailin_test",
-
 	withCredentials: true,
 	header: {
 		// 'X-Auth-Token': 'xxxx',
 		// contentType: "application/x-www-form-urlencoded",
 		contentType: 'application/json',
-
+		// Authorization: 'Bearer ' + this.getToken(),
 		// 'Content-Type': 'application/json'
 	}
 };
@@ -45,8 +44,9 @@ globalInterceptor.request.use(
 		if (token) {
 			if (config.data) {
 				config.data.token = token;
+				config.header.Authorization = 'Bearer ' + getToken()
 			}
-			// console.log(config)
+			console.log(config)
 			return config;
 		} else {
 			// console.log('false')
@@ -81,7 +81,7 @@ globalInterceptor.response.use(
 			return res;
 		} else if (res.data.error === -1) {
 			// 没有权限,提示去登录
-			toLogin();
+			// toLogin();
 		} else if (res.data.error === 1) {
 			// 操作失败
 			operationFailed(res.data.message);
