@@ -81,10 +81,6 @@
 			"style": {}
 		},
 		{
-			"path": "pages/login/sjlogin/sjlogin",
-			"style": {}
-		},
-		{
 			"path": "pages/user/user",
 			"style": {
 				"navigationBarTitleText": "ta的信息"
