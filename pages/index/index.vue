@@ -75,7 +75,7 @@
 				if (this.userInfoForShar.nickname.indexOf(this.ManagePading)==0) {
 					this.userInfoForShar.nickname = this.ManageName;
 				}
-				this.wxsss();
+				// this.wxsss();
 			}
 			let TypeIndexCart = getApp().globalData.TypeIndexCart;
 			if (TypeIndexCart != this.listType) {
@@ -113,9 +113,9 @@
 				var me = this;
 				let consturl = 'http://ailin.feiqing.net/';
 				// 生成该页面的绝对链接
-				let fuxkwx = 'http://ailin.feiqing.net/static/html/redirect.html?app3Redirect=' + encodeURIComponent(consturl);
+				let wxsharurllll = 'http://ailin.feiqing.net/static/html/redirect.html?app3Redirect=' + encodeURIComponent(consturl);
 				uni.request({
-					url: 'http://www.chinaclick.com.cn/ailin/app/wxApi',
+
 					method: 'GET',
 					data: {
 						url: consturl
@@ -134,12 +134,12 @@
 							jweixin.updateAppMessageShareData({
 								title: '虹桥正荣府|' + me.userInfoForShar.nickname + '邀请您加入', // 分享标题
 								desc: me.userInfoForShar.nickname + '邀请您加入', // 分享描述
-								link: fuxkwx, // 分享链接
+								link: wxsharurllll, // 分享链接
 								imgUrl: me.userInfoForShar.headimgurl, // 分享图标
 								success: function() {
 									// 用户确认分享后执行的回调函数
 									console.log('用户确认分享');
-									console.log(fuxkwx);
+									console.log(wxsharurllll);
 								},
 								cancel: function() {
 									// 用户取消分享后执行的回调函数
@@ -149,7 +149,7 @@
 							//自定义“分享到朋友圈”及“分享到QQ空间”按钮的分享内容（1.4.0）
 							jweixin.updateTimelineShareData({
 								title: '虹桥正荣府|' + me.userInfoForShar.nickname + '邀请您加入', // 分享标题
-								link: fuxkwx, // 分享链接
+								link: wxsharurllll, // 分享链接
 								imgUrl: me.userInfoForShar.headimgurl, // 分享图标
 								success: function() {
 									// 用户确认分享后执行的回调函数
