@@ -46,30 +46,14 @@
 			// 获取用户信息
 			var me = this;
 			const userInfo = uni.getStorageSync('userData');
-			console.log(par)
-			if (par.nextTo) {
-				// 通过分享进入
-				// 设置页面返回监听
-				uni.$once('intoIndexBySher', function() {
-					console.log('从分享活动页面跳回');
-					me.stateList.push(userInfo.districts.estate);
-					me.stateList.push(userInfo.districts.street);
-					me.getList();
-				});
-				console.log('去分享活动页面跳回');
-				this.choose(par)
-				// uni.navigateTo({
-				// 	url: '../content/content?contentId=' + par.contentId + '&typeId=' + par.typeId
-				// });
-			} else {
-				// 正常加载内容
-				if (userInfo) {
-					// 防止用户是没有登录的
-					this.stateList.push(userInfo.districts.estate);
-					this.stateList.push(userInfo.districts.street);
-					this.getList();
-				}
+			// 加载内容
+			if (userInfo) {
+				// 防止用户是没有登录的
+				this.stateList.push(userInfo.districts.estate);
+				this.stateList.push(userInfo.districts.street);
+				this.getList();
 			}
+
 		},
 		onShow() {
 			const userInfo = uni.getStorageSync('userData');
@@ -78,7 +62,6 @@
 				if (this.userInfoForShar.nickname.indexOf(this.ManagePading) == 0) {
 					this.userInfoForShar.nickname = this.ManageName;
 				}
-				// this.wxsss();
 			}
 			let TypeIndexCart = getApp().globalData.TypeIndexCart;
 			if (TypeIndexCart != this.listType) {
@@ -112,67 +95,6 @@
 			}, 1000);
 		},
 		methods: {
-			wxsss() {
-				var me = this;
-				let consturl = 'http://ailin.feiqing.net/';
-				// 生成该页面的绝对链接
-				let wxsharurl = 'http://ailin.feiqing.net/static/html/redirect.html?app3Redirect=' + encodeURIComponent(consturl);
-				uni.request({
-					url: 'http://www.chinaclick.com.cn/ailin/app/wxApi',
-					method: 'GET',
-					data: {
-						url: consturl
-					},
-					success: res => {
-						jweixin.config({
-							debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-							appId: res.data.appId, // 必填，公众号的唯一标识
-							timestamp: res.data.timestamp, // 必填，生成签名的时间戳
-							nonceStr: res.data.nonceStr, // 必填，生成签名的随机串
-							signature: res.data.signature, // 必填，签名，见附录1
-							jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData']
-						});
-						jweixin.ready(function() {
-							//自定义“分享给朋友”及“分享到QQ”按钮的分享内容（1.4.0）
-							jweixin.updateAppMessageShareData({
-								title: '虹桥正荣府|' + me.userInfoForShar.nickname + '邀请您加入', // 分享标题
-								desc: me.userInfoForShar.nickname + '邀请您加入', // 分享描述
-								link: wxsharurl, // 分享链接
-								imgUrl: me.userInfoForShar.headimgurl, // 分享图标
-								success: function() {
-									// 用户确认分享后执行的回调函数
-									console.log('用户确认分享');
-									console.log(wxsharurl);
-								},
-								cancel: function() {
-									// 用户取消分享后执行的回调函数
-									console.log('用户取消分享');
-								}
-							});
-							//自定义“分享到朋友圈”及“分享到QQ空间”按钮的分享内容（1.4.0）
-							jweixin.updateTimelineShareData({
-								title: '虹桥正荣府|' + me.userInfoForShar.nickname + '邀请您加入', // 分享标题
-								link: wxsharurl, // 分享链接
-								imgUrl: me.userInfoForShar.headimgurl, // 分享图标
-								success: function() {
-									// 用户确认分享后执行的回调函数
-									console.log('用户确认分享');
-								},
-								cancel: function() {
-									// 用户取消分享后执行的回调函数
-									console.log('用户取消分享');
-								}
-							});
-						});
-					},
-					fail: () => {
-						console.log('request fail', err);
-					},
-					complete: () => {
-						console.log('WX request done');
-					}
-				});
-			},
 			// 移除遮盖
 			removeMask() {
 				this.showInfoTypeList = !this.showInfoTypeList;

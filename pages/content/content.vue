@@ -134,105 +134,12 @@
 				uni.stopPullDownRefresh();
 			}, 1000);
 		},
-		onUnload() {
-			console.log('跳回');
-			// 点击分享链接=》进入首页onload判断动态分享链接，设置监听器，阻止首页列表获取=》详情页浏览=》浏览结束返回首页触发监听器，读取首页列表
-			uni.$emit('intoIndexBySher', {});
-		},
 		methods: {
 			// 发布者评论
 			pusherCom() {
 				// 获取输入框焦点
 				this.inputtext();
 				this.replyReviewType = false;
-			},
-			wxsss(shareType) {
-				let me = this;
-				if (shareType == 5) {
-					Pack.getList(me.contentinfo.content_id, 3).then(res => {
-						let usernum = res.data.data.list.length;
-						let desc = '';
-						for (let i = 0; i < usernum; i++) {
-							if (res.data.data.list[i].nickname.indexOf(me.ManagePading) == 0) {
-								desc = desc + '#' + me.ManageName;
-							} else {
-								desc = desc + '#' + res.data.data.list[i].nickname;
-							}
-						}
-						let title = '虹桥正荣府|' + me.contentinfo.title; // 分享标题
-						me.wxss(title, desc);
-					});
-				} else {
-					let title = '虹桥正荣府|' + me.contentinfo.title; // 分享标题
-					let desc = me.contentinfo.content.slice(0, 15) + '...'; // 分享描述
-					me.wxss(title, desc);
-				}
-			},
-			wxss(shareTitle, shareDesc) {
-				var me = this;
-				let consturl = 'http://ailin.feiqing.net/#/pages/content/content?contentId=' + me.content_id + '&typeId=' + me.contentinfo
-					.type_id;
-				// 生成该页面的绝对链接
-				let urlnow = 'http://ailin.feiqing.net/#' + window.location.href.split('#')[1];
-				let wxsharurl = 'http://ailin.feiqing.net/static/html/redirect.html?app3Redirect=' + encodeURIComponent(consturl);
-				uni.request({
-					url: 'http://www.chinaclick.com.cn/ailin/app/wxApi',
-					method: 'GET',
-					data: {
-						url: consturl
-					},
-					success: res => {
-						jweixin.config({
-							debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-							appId: res.data.appId, // 必填，公众号的唯一标识
-							timestamp: res.data.timestamp, // 必填，生成签名的时间戳
-							nonceStr: res.data.nonceStr, // 必填，生成签名的随机串
-							signature: res.data.signature, // 必填，签名，见附录1
-							jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData']
-						});
-						jweixin.ready(function() {
-							//自定义“分享给朋友”及“分享到QQ”按钮的分享内容（1.4.0）
-							jweixin.updateAppMessageShareData({
-								// title: '虹桥正荣府|' + me.contentinfo.title, // 分享标题
-								// desc: me.contentinfo.title, // 分享描述
-								title: shareTitle,
-								desc: shareDesc,
-								// link: window.location.href, // 分享链接
-								link: wxsharurl, // 分享链接
-								imgUrl: me.contentinfo.images[0].src, // 分享图标
-								success: function() {
-									// 用户确认分享后执行的回调函数
-									console.log('用户确认分享');
-									console.log(wxsharurl);
-								},
-								cancel: function() {
-									// 用户取消分享后执行的回调函数
-									console.log('用户取消分享');
-								}
-							});
-							//自定义“分享到朋友圈”及“分享到QQ空间”按钮的分享内容（1.4.0）
-							jweixin.updateTimelineShareData({
-								title: '虹桥正荣府|' + me.contentinfo.title, // 分享标题
-								link: wxsharurl, // 分享链接
-								imgUrl: me.contentinfo.images[0].src, // 分享图标
-								success: function() {
-									// 用户确认分享后执行的回调函数
-									console.log('用户确认分享');
-								},
-								cancel: function() {
-									// 用户取消分享后执行的回调函数
-									console.log('用户取消分享');
-								}
-							});
-						});
-					},
-					fail: () => {
-						console.log('request fail', err);
-					},
-					complete: () => {
-						console.log('WX request done');
-					}
-				});
 			},
 			// 喜欢和收藏
 			likeThisContent() {
@@ -519,71 +426,61 @@
 		},
 		onLoad(params) {
 			var me = this;
-			// 获取页面栈
-			const pages = getCurrentPages();
 			const userInfo = uni.getStorageSync('userData');
 			if (userInfo) {
-				if (pages.length < 2) {
-					// 页面栈中无首页
-					// 携带当前页面回到首页再次跳转
-					window.location.replace(this.WebUrl + '/#/?nextTo=content&contentId=' + params.contentId + '&typeId=' +
-						params.typeId);
-				} else {
-					// 获取页面参数
-					me.content_id = params.contentId;
-					me.mineInfo = userInfo;
-					me.mineId = userInfo.user_id;
-					// 获取该记录的详细情况
-					if (params.typeId == 4) {
-						// 为活动
-						Activity.getDetail(me.content_id).then(res => {
-							me.contentinfo = res.data.data;
-							// me.wxsss(params.typeId);
-							if (me.mineId == res.data.data.user_id) {
-								me.pushByMe = true;
-							}
-							me.reviewType = me.contentType[me.contentinfo.type_id];
-							me.contentinfo.time = me.contentinfo.add_time.slice(5, 16);
-							// 获取动态记录评论列表
-							me.getReviewList(me.content_id, me.contentinfo.type_id);
+				// 获取页面参数
+				me.content_id = params.contentId;
+				me.mineInfo = userInfo;
+				me.mineId = userInfo.user_id;
+				// 获取该记录的详细情况
+				if (params.typeId == 4) {
+					// 为活动
+					Activity.getDetail(me.content_id).then(res => {
+						me.contentinfo = res.data.data;
+						if (me.mineId == res.data.data.user_id) {
+							me.pushByMe = true;
+						}
+						me.reviewType = me.contentType[me.contentinfo.type_id];
+						me.contentinfo.time = me.contentinfo.add_time.slice(5, 16);
+						// 获取动态记录评论列表
+						me.getReviewList(me.content_id, me.contentinfo.type_id);
 
-							me.num = me.contentinfo.num_upper_limit;
-							Activity.getList(me.content_id).then(res => {
-								me.join_num = res.data.data.list.length;
-								console.log(me.num);
-								console.log(me.join_num);
-								if (me.num == me.join_num) {
-									me.num_end = 1;
-								}
-							});
-						});
-					} else if (params.typeId == 5) {
-						// 为拼团
-						Pack.getPackDetail(me.content_id).then(res => {
-							me.contentinfo = res.data.data;
-							// me.wxsss(params.typeId);
-							if (me.mineId == res.data.data.user_id) {
-								me.pushByMe = true;
+						me.num = me.contentinfo.num_upper_limit;
+						Activity.getList(me.content_id).then(res => {
+							me.join_num = res.data.data.list.length;
+							console.log(me.num);
+							console.log(me.join_num);
+							if (me.num == me.join_num) {
+								me.num_end = 1;
 							}
-							me.reviewType = me.contentType[me.contentinfo.type_id];
-							me.contentinfo.time = me.contentinfo.add_time.slice(5, 16);
-							// 获取动态记录评论列表
-							me.getReviewList(me.content_id, me.contentinfo.type_id);
 						});
-					} else {
-						Content.getDetail(me.content_id).then(res => {
-							me.contentinfo = res.data.data;
-							// me.wxsss(0);
-							if (me.mineId == res.data.data.user_id) {
-								me.pushByMe = true;
-							}
-							me.reviewType = me.contentType[me.contentinfo.type_id];
-							me.contentinfo.time = me.contentinfo.add_time.slice(5, 16);
-							// 获取动态记录评论列表
-							me.getReviewList(me.content_id, me.contentinfo.type_id);
-						});
-					}
+					});
+				} else if (params.typeId == 5) {
+					// 为拼团
+					Pack.getPackDetail(me.content_id).then(res => {
+						me.contentinfo = res.data.data;
+						if (me.mineId == res.data.data.user_id) {
+							me.pushByMe = true;
+						}
+						me.reviewType = me.contentType[me.contentinfo.type_id];
+						me.contentinfo.time = me.contentinfo.add_time.slice(5, 16);
+						// 获取动态记录评论列表
+						me.getReviewList(me.content_id, me.contentinfo.type_id);
+					});
+				} else {
+					Content.getDetail(me.content_id).then(res => {
+						me.contentinfo = res.data.data;
+						// me.wxsss(0);
+						if (me.mineId == res.data.data.user_id) {
+							me.pushByMe = true;
+						}
+						me.reviewType = me.contentType[me.contentinfo.type_id];
+						me.contentinfo.time = me.contentinfo.add_time.slice(5, 16);
+						// 获取动态记录评论列表
+						me.getReviewList(me.content_id, me.contentinfo.type_id);
+					});
 				}
+
 			}
 		}
 	};
