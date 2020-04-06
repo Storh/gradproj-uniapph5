@@ -137,22 +137,12 @@
 			},
 			// 根据不同情况进行页面跳转
 			toView() {
-				// 查看是否需要跳转
-				const redirectRoute = uni.getStorageSync('redirectRoute');
-				const redirectUrl = uni.getStorageSync('redirectUrl');
-				// console.log('redirectUrl:', redirectUrl)
-				if (redirectRoute === 'pages/content/content') {
-					uni.redirectTo({
-						url: redirectUrl
-					});
-				} else {
-					this.toIndex()
-				};
+				this.toIndex()
 				uni.removeStorageSync('redirectRoute');
 				uni.removeStorageSync('redirectUrl');
 			},
 			toIndex() {
-				uni.switchTab({
+				uni.reLaunch({
 					url: '/pages/index/index'
 				});
 			}

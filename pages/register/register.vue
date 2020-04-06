@@ -118,7 +118,7 @@
 				uni.removeStorageSync('redirectUrl');
 			},
 			toIndex() {
-				uni.switchTab({
+				uni.reLaunch({
 					url: "/pages/index/index"
 				})
 			}
