@@ -130,7 +130,7 @@
 					});
 				}
 			},
-			// 选中
+			// 选中一个动态，触发当前组件父组件上的'click'事件即'@click'。并将当前动态的内容信息传给监听器回调
 			lchoose(e) {
 				let index = e.currentTarget.dataset.index;
 				this.$emit('click', this.liftlist[index]);
