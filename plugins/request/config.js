@@ -43,10 +43,10 @@ globalInterceptor.request.use(
 		let token = getToken()
 		if (token) {
 			if (config.data) {
-				config.data.token = token;
+				// config.data.token = token;
 				config.header.Authorization = 'Bearer ' + getToken()
 			}
-			console.log(config)
+			// console.log(config)
 			return config;
 		} else {
 			// console.log('false')
@@ -81,7 +81,7 @@ globalInterceptor.response.use(
 			return res;
 		} else if (res.data.error === -1) {
 			// 没有权限,提示去登录
-			// toLogin();
+			toLogin();
 		} else if (res.data.error === 1) {
 			// 操作失败
 			operationFailed(res.data.message);

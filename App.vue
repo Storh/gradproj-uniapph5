@@ -5,7 +5,7 @@
 			// 隐藏底边栏
 			uni.hideTabBar({});
 			// 验证用户是否登录
-			// this.checkLogin();
+			this.checkLogin();
 		},
 		globalData: {
 			// 用于全局分别当前页面类型是首页还是乐享
