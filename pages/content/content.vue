@@ -15,11 +15,6 @@
 					<br />
 				</block>
 			</view>
-			<!-- 为你推荐 -->
-			<!-- 			<view class="recommend">
-				<view class="recommendtext"><text>—— 为你推荐 ——</text></view>
-				<recom-water-fall :id="contentinfo.content_id" @click="choose"></recom-water-fall>
-			</view> -->
 		</view>
 		<!-- 底端栏 -->
 		<view v-if="pushByMe">
@@ -133,12 +128,12 @@
 				reviewAndReplyText: ''
 			};
 		},
-		onLoad: function(options) {
-			setTimeout(function() {
-				console.log('start pulldown');
-			}, 1000);
-			uni.startPullDownRefresh();
-		},
+		// onLoad: function(options) {
+		// 	setTimeout(function() {
+		// 		console.log('start pulldown');
+		// 	}, 1000);
+		// 	uni.startPullDownRefresh();
+		// },
 		onPullDownRefresh() {
 			console.log('refresh');
 			setTimeout(function() {
@@ -162,7 +157,7 @@
 						let usernum = res.data.data.list.length;
 						let desc = '';
 						for (let i = 0; i < usernum; i++) {
-							if (res.data.data.list[i].nickname.indexOf(me.ManagePading)==0) {
+							if (res.data.data.list[i].nickname.indexOf(me.ManagePading) == 0) {
 								desc = desc + '#' + me.ManageName;
 							} else {
 								desc = desc + '#' + res.data.data.list[i].nickname;
@@ -477,7 +472,7 @@
 			replyReview(replyItem) {
 				if (this.pushByMe) {
 					this.replyReviewType = true;
-					if (replyItem.nickname.indexOf(this.ManagePading)==0) {
+					if (replyItem.nickname.indexOf(this.ManagePading) == 0) {
 						let text = '您正在回复@' + this.ManageName;
 						this.commentPlaceholder = text;
 					} else {
@@ -529,6 +524,10 @@
 			}
 		},
 		onLoad(params) {
+			setTimeout(function() {
+				console.log('start pulldown');
+			}, 1000);
+			uni.startPullDownRefresh();
 			var me = this;
 			const pages = getCurrentPages();
 			const userInfo = uni.getStorageSync('userData');
