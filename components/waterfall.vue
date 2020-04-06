@@ -21,7 +21,7 @@
 							<view class="nickname" @click="toUser(litem)">{{ litem.nickname }}</view>
 						</block>
 						<view class="item-like" @click="likeThislItem(index)">
-							<ailin-icon v-if="litem.like_state === '1'" iconId="#icon-dianzan-on"></ailin-icon>
+							<ailin-icon v-if="litem.like_state == '1'" iconId="#icon-dianzan-on"></ailin-icon>
 							<ailin-icon v-else iconId="#icon-dianzan-off"></ailin-icon>
 						</view>
 						<text class="like_num">{{ litem.like_num }}</text>
@@ -49,7 +49,7 @@
 							<view class="nickname" @click="toUser(ritem)">{{ ritem.nickname }}</view>
 						</block>
 						<view class="item-like" @click="likeThisrItem(index)">
-							<ailin-icon class="like_icon" v-if="ritem.like_state === '1'" iconId="#icon-dianzan-on"></ailin-icon>
+							<ailin-icon class="like_icon" v-if="ritem.like_state == '1'" iconId="#icon-dianzan-on"></ailin-icon>
 							<ailin-icon class="like_icon" v-else iconId="#icon-dianzan-off"></ailin-icon>
 						</view>
 						<text class="like_num">{{ ritem.like_num }}</text>
@@ -105,7 +105,7 @@
 			},
 			// 点击喜欢按键
 			likeThislItem(index) {
-				if (this.liftlist[index].like_state === '1') {
+				if (this.liftlist[index].like_state == '1') {
 					Content.setLike(this.liftlist[index].content_id, 0).then(res => {
 						this.liftlist[index].like_state = '0';
 						this.liftlist[index].like_num--;
@@ -118,7 +118,7 @@
 				}
 			},
 			likeThisrItem(index) {
-				if (this.rightlist[index].like_state === '1') {
+				if (this.rightlist[index].like_state == '1') {
 					Content.setLike(this.rightlist[index].content_id, 0).then(res => {
 						this.rightlist[index].like_state = '0';
 						this.rightlist[index].like_num--;
