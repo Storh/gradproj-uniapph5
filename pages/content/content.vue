@@ -128,12 +128,6 @@
 				reviewAndReplyText: ''
 			};
 		},
-		// onLoad: function(options) {
-		// 	setTimeout(function() {
-		// 		console.log('start pulldown');
-		// 	}, 1000);
-		// 	uni.startPullDownRefresh();
-		// },
 		onPullDownRefresh() {
 			console.log('refresh');
 			setTimeout(function() {
@@ -141,6 +135,8 @@
 			}, 1000);
 		},
 		onUnload() {
+			console.log('跳回');
+			// 点击分享链接=》进入首页onload判断动态分享链接，设置监听器，阻止首页列表获取=》详情页浏览=》浏览结束返回首页触发监听器，读取首页列表
 			uni.$emit('intoIndexBySher', {});
 		},
 		methods: {
@@ -173,14 +169,12 @@
 				}
 			},
 			wxss(shareTitle, shareDesc) {
-				// console.log(shareTitle);
-				// console.log(shareDesc);
 				var me = this;
 				let consturl = 'http://ailin.feiqing.net/#/pages/content/content?contentId=' + me.content_id + '&typeId=' + me.contentinfo
 					.type_id;
 				// 生成该页面的绝对链接
 				let urlnow = 'http://ailin.feiqing.net/#' + window.location.href.split('#')[1];
-				let fuxkwx = 'http://ailin.feiqing.net/static/html/redirect.html?app3Redirect=' + encodeURIComponent(consturl);
+				let wxsharurl = 'http://ailin.feiqing.net/static/html/redirect.html?app3Redirect=' + encodeURIComponent(consturl);
 				uni.request({
 					url: 'http://www.chinaclick.com.cn/ailin/app/wxApi',
 					method: 'GET',
@@ -204,12 +198,12 @@
 								title: shareTitle,
 								desc: shareDesc,
 								// link: window.location.href, // 分享链接
-								link: fuxkwx, // 分享链接
+								link: wxsharurl, // 分享链接
 								imgUrl: me.contentinfo.images[0].src, // 分享图标
 								success: function() {
 									// 用户确认分享后执行的回调函数
 									console.log('用户确认分享');
-									console.log(fuxkwx);
+									console.log(wxsharurl);
 								},
 								cancel: function() {
 									// 用户取消分享后执行的回调函数
@@ -219,7 +213,7 @@
 							//自定义“分享到朋友圈”及“分享到QQ空间”按钮的分享内容（1.4.0）
 							jweixin.updateTimelineShareData({
 								title: '虹桥正荣府|' + me.contentinfo.title, // 分享标题
-								link: fuxkwx, // 分享链接
+								link: wxsharurl, // 分享链接
 								imgUrl: me.contentinfo.images[0].src, // 分享图标
 								success: function() {
 									// 用户确认分享后执行的回调函数
@@ -524,20 +518,16 @@
 			}
 		},
 		onLoad(params) {
-			setTimeout(function() {
-				console.log('start pulldown');
-			}, 1000);
-			uni.startPullDownRefresh();
 			var me = this;
+			// 获取页面栈
 			const pages = getCurrentPages();
 			const userInfo = uni.getStorageSync('userData');
 			if (userInfo) {
 				if (pages.length < 2) {
-					var me = this;
-					// let url = pages[0].$route.fullPath;
-					window.location.replace('http://ailin.feiqing.net/#/?nextTo=content&contentId=' + params.contentId + '&typeId=' +
+					// 页面栈中无首页
+					// 携带当前页面回到首页再次跳转
+					window.location.replace(this.WebUrl + '/#/?nextTo=content&contentId=' + params.contentId + '&typeId=' +
 						params.typeId);
-					// window.location.replace('http://192.168.16.18:8080/#/?from=' + url)
 				} else {
 					// 获取页面参数
 					me.content_id = params.contentId;
@@ -548,7 +538,7 @@
 						// 为活动
 						Activity.getDetail(me.content_id).then(res => {
 							me.contentinfo = res.data.data;
-							me.wxsss(params.typeId);
+							// me.wxsss(params.typeId);
 							if (me.mineId == res.data.data.user_id) {
 								me.pushByMe = true;
 							}
@@ -568,9 +558,10 @@
 							});
 						});
 					} else if (params.typeId == 5) {
+						// 为拼团
 						Pack.getPackDetail(me.content_id).then(res => {
 							me.contentinfo = res.data.data;
-							me.wxsss(params.typeId);
+							// me.wxsss(params.typeId);
 							if (me.mineId == res.data.data.user_id) {
 								me.pushByMe = true;
 							}
@@ -582,7 +573,7 @@
 					} else {
 						Content.getDetail(me.content_id).then(res => {
 							me.contentinfo = res.data.data;
-							me.wxsss(0);
+							// me.wxsss(0);
 							if (me.mineId == res.data.data.user_id) {
 								me.pushByMe = true;
 							}

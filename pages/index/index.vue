@@ -46,6 +46,7 @@
 			// 获取用户信息
 			var me = this;
 			const userInfo = uni.getStorageSync('userData');
+			console.log(par)
 			if (par.nextTo) {
 				// 通过分享进入
 				// 设置页面返回监听
@@ -55,9 +56,11 @@
 					me.stateList.push(userInfo.districts.street);
 					me.getList();
 				});
-				uni.navigateTo({
-					url: '../content/content?contentId=' + par.contentId + '&typeId=' + par.typeId
-				});
+				console.log('去分享活动页面跳回');
+				this.choose(par)
+				// uni.navigateTo({
+				// 	url: '../content/content?contentId=' + par.contentId + '&typeId=' + par.typeId
+				// });
 			} else {
 				// 正常加载内容
 				if (userInfo) {
@@ -72,7 +75,7 @@
 			const userInfo = uni.getStorageSync('userData');
 			if (userInfo) {
 				this.userInfoForShar = userInfo;
-				if (this.userInfoForShar.nickname.indexOf(this.ManagePading)==0) {
+				if (this.userInfoForShar.nickname.indexOf(this.ManagePading) == 0) {
 					this.userInfoForShar.nickname = this.ManageName;
 				}
 				// this.wxsss();
@@ -113,9 +116,9 @@
 				var me = this;
 				let consturl = 'http://ailin.feiqing.net/';
 				// 生成该页面的绝对链接
-				let wxsharurllll = 'http://ailin.feiqing.net/static/html/redirect.html?app3Redirect=' + encodeURIComponent(consturl);
+				let wxsharurl = 'http://ailin.feiqing.net/static/html/redirect.html?app3Redirect=' + encodeURIComponent(consturl);
 				uni.request({
-
+					url: 'http://www.chinaclick.com.cn/ailin/app/wxApi',
 					method: 'GET',
 					data: {
 						url: consturl
@@ -134,12 +137,12 @@
 							jweixin.updateAppMessageShareData({
 								title: '虹桥正荣府|' + me.userInfoForShar.nickname + '邀请您加入', // 分享标题
 								desc: me.userInfoForShar.nickname + '邀请您加入', // 分享描述
-								link: wxsharurllll, // 分享链接
+								link: wxsharurl, // 分享链接
 								imgUrl: me.userInfoForShar.headimgurl, // 分享图标
 								success: function() {
 									// 用户确认分享后执行的回调函数
 									console.log('用户确认分享');
-									console.log(wxsharurllll);
+									console.log(wxsharurl);
 								},
 								cancel: function() {
 									// 用户取消分享后执行的回调函数
@@ -149,7 +152,7 @@
 							//自定义“分享到朋友圈”及“分享到QQ空间”按钮的分享内容（1.4.0）
 							jweixin.updateTimelineShareData({
 								title: '虹桥正荣府|' + me.userInfoForShar.nickname + '邀请您加入', // 分享标题
-								link: wxsharurllll, // 分享链接
+								link: wxsharurl, // 分享链接
 								imgUrl: me.userInfoForShar.headimgurl, // 分享图标
 								success: function() {
 									// 用户确认分享后执行的回调函数
