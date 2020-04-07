@@ -54,15 +54,16 @@
 						<text class="comm_text">评论</text>
 					</view>
 				</view>
-				<block v-if="contentinfo.type_id == 5">
+				<block v-if="contentinfo.type_id == 4">
 					<block v-if="contentinfo.is_end == 1"><button disabled="true">已结束</button></block>
-					<block v-if="contentinfo.is_end == 0">
+					<block v-else-if="num_end == 1"><button disabled="true">人数已满</button></block>
+					<block v-else>
 						<button @click="joinContent(contentinfo.content_id, contentinfo.type_id)">{{ btntext[contentinfo.type_id] }}</button>
 					</block>
 				</block>
-				<block v-if="contentinfo.type_id == 4">
-					<block v-if="num_end == 1"><button disabled="true">人数已满</button></block>
-					<block v-if="num_end == 0">
+				<block v-else-if="contentinfo.type_id == 5">
+					<block v-if="contentinfo.is_end == 1"><button disabled="true">已结束</button></block>
+					<block v-if="contentinfo.is_end == 0">
 						<button @click="joinContent(contentinfo.content_id, contentinfo.type_id)">{{ btntext[contentinfo.type_id] }}</button>
 					</block>
 				</block>
