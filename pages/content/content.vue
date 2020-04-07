@@ -449,8 +449,8 @@
 						me.num = me.contentinfo.num_upper_limit;
 						Activity.getList(me.content_id).then(res => {
 							me.join_num = res.data.data.list.length;
-							console.log(me.num);
-							console.log(me.join_num);
+							// console.log(me.num);
+							// console.log(me.join_num);
 							if (me.num == me.join_num) {
 								me.num_end = 1;
 							}

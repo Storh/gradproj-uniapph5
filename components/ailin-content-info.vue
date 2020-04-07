@@ -14,12 +14,10 @@
 				<view class="qianming" v-if="contentinfo.personal_signature">{{ contentinfo.personal_signature }}</view>
 				<view class="qianming" v-else>该用户没有个性签名</view>
 			</view>
-			<!-- <view class="jubao" @click="toJubao"><ailin-icon iconId="#icon-jinggao"></ailin-icon></view> -->
 		</view>
 		<!-- 滚动图片 -->
 		<swiper :indicator-dots="true" :autoplay="true" style="height: 750upx;">
 			<swiper-item v-for="imglist in contentinfo.images" :key="imglist.id">
-				<!-- <image mode="aspectFit" class="simg" :src="imglist.src"></image> -->
 				<image mode="aspectFill" class="simg" :src="imglist.src" @tap="previewImage(imglist.src)"></image>
 			</swiper-item>
 		</swiper>
@@ -56,8 +54,6 @@
 		</view>
 		<view v-else-if="contentinfo.type_id == 5" class="closing_date">
 			<text>团购截止日期：{{ contentinfo.closing_date.slice(0, 16) }}</text>
-			<!-- <text>总量：{{ contentinfo.num_upper_limit }}</text> -->
-			<!-- <text>剩余：{{ rest }}</text> -->
 		</view>
 		<!-- 正文 -->
 		<view class="article">
@@ -73,7 +69,6 @@
 </template>
 
 <script>
-	// import jswx from '../static/index.js';
 	import Activity from '../api/info/activity';
 	import Pack from '../api/info/pack';
 	export default {
@@ -85,7 +80,6 @@
 				default: {}
 			}
 		},
-		// rest: 0,
 		data() {
 			return {
 				link_external: '',
@@ -159,12 +153,12 @@
 					this.rest = this.contentinfo.num_upper_limit - res.data.data.list.length;
 				});
 			}
-			console.log(this.contentinfo);
+			// console.log(this.contentinfo);
 			this.showMember = this.contentType[this.contentinfo.type_id - 1];
 			// 获取参与人员列表
 			if (this.showMember) {
 				if (this.contentinfo.type_id == 4) {
-					// 默认获取三条
+					// 获取参与人列表 显示一列
 					Activity.getList(this.contentinfo.content_id, 13).then(res => {
 						this.peoplelist = res.data.data.list;
 					});
