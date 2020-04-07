@@ -91,12 +91,6 @@
 			};
 		},
 		methods: {
-			// 举报用户信息
-			toJubao() {
-				uni.navigateTo({
-					url: '/pages/jubao/jubao?id=' + this.contentinfo.content_id + '&type=content'
-				});
-			},
 			previewImage(url) {
 				const previewList = [url];
 				uni.previewImage({

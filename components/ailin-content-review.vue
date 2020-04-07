@@ -21,7 +21,7 @@
 				<!-- 是否喜欢 -->
 				<view class="likes">
 					<view class="likebutton" @click="dianzanThisItem(index)">
-						<ailin-icon v-if="item.like_state == '1'" iconId="#icon-PLdianzan-on"></ailin-icon>
+						<ailin-icon v-if="item.like_state == 1" iconId="#icon-PLdianzan-on"></ailin-icon>
 						<ailin-icon v-else iconId="#icon-PLdianzan-off"></ailin-icon>
 					</view>
 					<text class="like_num">{{ item.like_num }}</text>
@@ -153,31 +153,23 @@
 				// 该页面为评论内容
 				if (this.reviewType) {
 					if (this.showlist[dzdex].like_state == 1) {
-						this.showlist[dzdex].like_state = '0';
+						this.showlist[dzdex].like_state = 0;
 						this.showlist[dzdex].like_num--;
-						Review.setLike(this.showlist[dzdex].review_id, 0).then(res => {
-
-						});
+						Review.setLike(this.showlist[dzdex].review_id, 0)
 					} else {
-						this.showlist[dzdex].like_state = '1';
+						this.showlist[dzdex].like_state = 1;
 						this.showlist[dzdex].like_num++;
-						Review.setLike(this.showlist[dzdex].review_id, 1).then(res => {
-
-						});
+						Review.setLike(this.showlist[dzdex].review_id, 1)
 					}
 				} else {
 					if (this.showlist[dzdex].like_state == 1) {
-						this.showlist[dzdex].like_state = '0';
+						this.showlist[dzdex].like_state = 0;
 						this.showlist[dzdex].like_num--;
-						Content.registSetLike(this.showlist[dzdex].regist_id, this.contentinfo.type_id, 0).then(res => {
-
-						});
+						Content.registSetLike(this.showlist[dzdex].regist_id, this.contentinfo.type_id, 0)
 					} else {
-						this.showlist[dzdex].like_state = '1';
+						this.showlist[dzdex].like_state = 1;
 						this.showlist[dzdex].like_num++;
-						Content.registSetLike(this.showlist[dzdex].regist_id, this.contentinfo.type_id, 1).then(res => {
-
-						});
+						Content.registSetLike(this.showlist[dzdex].regist_id, this.contentinfo.type_id, 1)
 					}
 				}
 			},

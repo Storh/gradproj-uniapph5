@@ -92,13 +92,11 @@
 	import Review from '../../api/info/review';
 	import AilinContentInfo from '../../components/ailin-content-info.vue';
 	import AilinContentReview from '../../components/ailin-content-review.vue';
-	import RecomWaterFall from '../../components/recomwaterfall.vue';
 	import jweixin from '../../components/wxjsjdk.js';
 	export default {
 		components: {
 			AilinContentInfo,
-			AilinContentReview,
-			RecomWaterFall
+			AilinContentReview
 		},
 		data() {
 			return {
@@ -130,7 +128,8 @@
 			};
 		},
 		onPullDownRefresh() {
-			console.log('refresh');
+			// console.log('refresh');
+			this.loadGetInfo()
 			setTimeout(function() {
 				uni.stopPullDownRefresh();
 			}, 1000);
@@ -281,7 +280,6 @@
 					this.showOrgPhoneNum();
 				} else if (type == 4) {
 					// 活动,弹自己信息
-
 					uni.navigateTo({
 						url: '../../pages/content/join?id=' + this.contentinfo.content_id + '&type=' + this.contentinfo.type_id
 					});
@@ -391,13 +389,6 @@
 					this.inputtext();
 				}
 			},
-			//选中
-			choose(item) {
-				// item 返回选中对象信息
-				uni.navigateTo({
-					url: '../content/content?contentId=' + item.content_id
-				});
-			},
 			// 获取评论或问答等的列表
 			getReviewList(id, type) {
 				var me = this;
@@ -423,17 +414,9 @@
 						me.reviewlist = res.data.data.list;
 					});
 				}
-			}
-		},
-		onLoad(params) {
-			var me = this;
-			const userInfo = uni.getStorageSync('userData');
-			if (userInfo) {
-				// 获取页面参数
-				me.content_id = params.contentId;
-				me.mineInfo = userInfo;
-				me.mineId = userInfo.user_id;
-				// 获取该记录的详细情况
+			},
+			loadGetInfo() {
+				var me = this;
 				if (params.typeId == 4) {
 					// 为活动
 					Activity.getDetail(me.content_id).then(res => {
@@ -449,8 +432,6 @@
 						me.num = me.contentinfo.num_upper_limit;
 						Activity.getList(me.content_id).then(res => {
 							me.join_num = res.data.data.list.length;
-							// console.log(me.num);
-							// console.log(me.join_num);
 							if (me.num == me.join_num) {
 								me.num_end = 1;
 							}
@@ -471,7 +452,6 @@
 				} else {
 					Content.getDetail(me.content_id).then(res => {
 						me.contentinfo = res.data.data;
-						// me.wxsss(0);
 						if (me.mineId == res.data.data.user_id) {
 							me.pushByMe = true;
 						}
@@ -481,7 +461,19 @@
 						me.getReviewList(me.content_id, me.contentinfo.type_id);
 					});
 				}
+			}
 
+		},
+		onLoad(params) {
+			var me = this;
+			const userInfo = uni.getStorageSync('userData');
+			if (userInfo) {
+				// 获取页面参数
+				me.content_id = params.contentId;
+				me.mineInfo = userInfo;
+				me.mineId = userInfo.user_id;
+				// 获取该记录的详细情况
+				me.loadGetInfo()
 			}
 		}
 	};
