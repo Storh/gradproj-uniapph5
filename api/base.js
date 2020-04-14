@@ -26,11 +26,14 @@ export default {
 	// 1.7.1、 上传图片通用接口
 	uploadPhoto(path, file_type) {
 		let token = uni.getStorageSync('webToken');
+		let jwt='Bearer ' + token
 		let r = Request();
 		let instance = r.upload('/app/uploadFile/uploadPhoto', {
 			name: 'file_data',
 			filePath: path,
-			header: {},
+			header: {
+				Authorization : jwt
+			},
 			formData: {
 				token: token,
 				file_type
