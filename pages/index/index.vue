@@ -53,7 +53,10 @@
 				this.stateList.push(userInfo.districts.street);
 				this.getList();
 			}
-
+			// 预加载
+			setTimeout(function() {
+				me.preLoadList()
+			}, 1500);
 		},
 		onShow() {
 			const userInfo = uni.getStorageSync('userData');
@@ -136,6 +139,16 @@
 				// item 返回选中对象信息
 				uni.navigateTo({
 					url: '../content/content?contentId=' + item.content_id + '&typeId=' + item.type_id
+				});
+			},
+			preLoadList() {
+				// 预加载乐享
+				Content.getList(2, this.listType + 1, 1, 5).then(res => {
+					for (let item of res.data.data.list) {
+						console.log(item.image.src)
+						let image = new Image()
+						image.src = item.image.src
+					}
 				});
 			},
 			// 加载数据
