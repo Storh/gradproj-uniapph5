@@ -28,13 +28,6 @@
 								showCancel: false,
 								confirmColor: '#3CC51F',
 								success: function() {
-									// 获取当前页面路径
-									const pages = getCurrentPages();
-									const route = pages[pages.length - 1].route;
-									const fullPath = pages[pages.length - 1].$route.fullPath;
-									// 设置跳转路由
-									uni.setStorageSync('redirectUrl', fullPath);
-									uni.setStorageSync('redirectRoute', route);
 									uni.redirectTo({
 										url: '/pages/register/register?uid=' + userInfo.user_id
 									});
@@ -54,15 +47,6 @@
 					showCancel: false,
 					confirmColor: '#3CC51F',
 					success: function() {
-						// 获取当前页面路径
-						const pages = getCurrentPages();
-						const route = pages[pages.length - 1].route;
-						const fullPath = pages[pages.length - 1].$route.fullPath;
-						console.log(route);
-						console.log(fullPath);
-						// 设置跳转路由
-						uni.setStorageSync('redirectUrl', fullPath);
-						uni.setStorageSync('redirectRoute', route);
 						uni.reLaunch({
 							url: '/pages/login/login'
 						});
