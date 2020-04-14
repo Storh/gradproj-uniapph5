@@ -140,7 +140,7 @@ export default {
 		});
 	},
 	onUnload() {
-		this.delNoSaveUploadFile();
+		// this.delNoSaveUploadFile();
 	},
 	methods: {
 		pushFailed(mesg) {
@@ -201,7 +201,7 @@ export default {
 			let num = fileList.length;
 			for (let i = 0; i < num; i++) {
 				let file = fileList.pop();
-				Base.delPhoto(file.id, 2);
+				// Base.delPhoto(file.id, 2);
 			}
 		},
 		// 点击取消返回
