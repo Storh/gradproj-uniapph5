@@ -35,7 +35,6 @@ export default {
 				Authorization : jwt
 			},
 			formData: {
-				token: token,
 				file_type
 			},
 			// onProgressUpdate(res) {
