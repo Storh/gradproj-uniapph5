@@ -4,7 +4,8 @@
 			<block v-for="(litem, index) in liftlist" :key="litem.content_id">
 				<!-- 图片 -->
 				<view :data-index="index" @click="lchoose">
-					<image class="img" mode="aspectFill" :src="litem.image.src" :style="litem.image.heiclass"></image>
+					<img class="imgs" v-lazy="litem.image.src" :style="litem.image.heiclass">  
+					<!-- <image class="img" mode="aspectFill" :src="litem.image.src" :style="litem.image.heiclass"></image> -->
 				</view>
 				<view class="content">
 					<!-- 标题和类型 -->
@@ -32,7 +33,8 @@
 		<view class="rightfall" id="right">
 			<block v-for="(ritem, index) in rightlist" :key="ritem.content_id">
 				<view :data-index="index" @click="rchoose">
-					<image class="img" mode="aspectFill" :src="ritem.image.src" :style="ritem.image.heiclass"></image>
+					<img class="imgs" v-lazy="ritem.image.src" :style="ritem.image.heiclass">  
+					<!-- <image class="img" mode="aspectFill" :src="ritem.image.src" :style="ritem.image.heiclass"></image> -->
 				</view>
 				<view class="content">
 					<!-- 标题和类型 -->
@@ -248,6 +250,12 @@
 
 	/*图片*/
 	.img {
+		width: 345upx;
+		border-top-left-radius: 7upx;
+		border-top-right-radius: 7upx;
+	}
+	.imgs {
+		object-fit: cover;
 		width: 345upx;
 		border-top-left-radius: 7upx;
 		border-top-right-radius: 7upx;

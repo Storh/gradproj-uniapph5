@@ -8,7 +8,9 @@ import ailinTabBar from "@/components/ailin-tab-bar.vue";
 import waterFall from "@/components/waterfall.vue";
 // 拦截器插件
 import Request from "@/plugins/request/index"
+import VueLazyload from 'vue-lazyload'
 
+Vue.use(VueLazyload)
 Vue.config.productionTip = false
 // 全局变量,引入服务器地址
 // Vue.prototype.SerUrl = 'http://39.105.169.18:7300/mock/5db865ea4be0621d2109ae8a'
