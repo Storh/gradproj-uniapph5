@@ -125,6 +125,8 @@ export default {
 			this.data.closing_date = res.data.data.closing_date;
 			this.data.num_upper_limit = res.data.data.num_upper_limit;
 			this.type_id = res.data.data.type_id;
+			this.data.link_external_url= res.data.data.link_external_url;
+			this.data.link_external_name= res.data.data.link_external_name;
 			if (res.data.data.images.length == 6) {
 				this.addImgBtn = false;
 			}
