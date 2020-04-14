@@ -415,9 +415,9 @@
 					});
 				}
 			},
-			loadGetInfo() {
+			loadGetInfo(typeId) {
 				var me = this;
-				if (params.typeId == 4) {
+				if (typeId == 4) {
 					// 为活动
 					Activity.getDetail(me.content_id).then(res => {
 						me.contentinfo = res.data.data;
@@ -437,7 +437,7 @@
 							}
 						});
 					});
-				} else if (params.typeId == 5) {
+				} else if (typeId == 5) {
 					// 为拼团
 					Pack.getPackDetail(me.content_id).then(res => {
 						me.contentinfo = res.data.data;
@@ -473,7 +473,7 @@
 				me.mineInfo = userInfo;
 				me.mineId = userInfo.user_id;
 				// 获取该记录的详细情况
-				me.loadGetInfo()
+				me.loadGetInfo(params.typeId)
 			}
 		}
 	};
