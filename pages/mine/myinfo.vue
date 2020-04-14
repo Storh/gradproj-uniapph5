@@ -79,7 +79,7 @@
 			choose(item) {
 				//  返回选中对象信息
 				uni.navigateTo({
-					url: '../content/content?contentId=' + item.content_id
+					url: '../content/content?contentId=' + item.content_id+ '&typeId=' + item.type_id
 				});
 			},
 			showLaunch() {

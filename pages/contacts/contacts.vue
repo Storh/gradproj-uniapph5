@@ -138,7 +138,7 @@
 						this.noticelist[index].read_state = 1;
 					});
 					uni.navigateTo({
-						url: '../content/content?contentId=' + notice.content_id
+						url: '../content/content?contentId=' + notice.content_id+ '&typeId=' + notice.content_type
 					});
 				}
 			},
