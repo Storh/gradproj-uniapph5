@@ -145,7 +145,7 @@
 				// 预加载乐享
 				Content.getList(2, this.listType + 1, 1, 5).then(res => {
 					for (let item of res.data.data.list) {
-						console.log(item.image.src)
+						// console.log(item.image.src)
 						let image = new Image()
 						image.src = item.image.src
 					}
