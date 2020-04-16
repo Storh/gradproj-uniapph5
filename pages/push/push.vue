@@ -91,54 +91,64 @@ export default {
 		// 设置标题和发布题材类型
 		let title = '发布' + params.title;
 		var me = this;
-		let hasHistoryData = uni.getStorageSync('HistoryPush');
-		if (hasHistoryData) {
-			let text = '你有' + me.pushInfo[hasHistoryData.type_id - 1] + '尚未发布';
-			uni.showModal({
-				title: '提醒',
-				content: text,
-				confirmText: '前往发布',
-				cancelText: '放弃',
-				confirmColor: '#3CC51F',
-				success: function(res) {
-					if (res.confirm) {
-						me.data = hasHistoryData;
-						if (me.data.type_id == 4) {
-							uni.redirectTo({ url: 'activity' });
-						} else if (me.data.type_id == 5) {
-							uni.redirectTo({ url: 'pack' });
-						} else {
-							let newtitle = '发布' + me.pushInfo[me.data.type_id - 1];
-							uni.setNavigationBarTitle({
-								title: newtitle
-							});
-						}
-					} else if (res.cancel) {
-						uni.removeStorageSync('HistoryPush');
-						me.data.type_id = params.key;
-						if (params.key == 4) {
-							uni.redirectTo({ url: 'activity' });
-						} else if (params.key == 5) {
-							uni.redirectTo({ url: 'pack' });
-						} else {
-							uni.setNavigationBarTitle({
-								title: title
-							});
-						}
-					}
-				}
-			});
+		// let hasHistoryData = uni.getStorageSync('HistoryPush');
+		// if (hasHistoryData) {
+		// 	let text = '你有' + me.pushInfo[hasHistoryData.type_id - 1] + '尚未发布';
+		// 	uni.showModal({
+		// 		title: '提醒',
+		// 		content: text,
+		// 		confirmText: '前往发布',
+		// 		cancelText: '放弃',
+		// 		confirmColor: '#3CC51F',
+		// 		success: function(res) {
+		// 			if (res.confirm) {
+		// 				me.data = hasHistoryData;
+		// 				if (me.data.type_id == 4) {
+		// 					uni.redirectTo({ url: 'activity' });
+		// 				} else if (me.data.type_id == 5) {
+		// 					uni.redirectTo({ url: 'pack' });
+		// 				} else {
+		// 					let newtitle = '发布' + me.pushInfo[me.data.type_id - 1];
+		// 					uni.setNavigationBarTitle({
+		// 						title: newtitle
+		// 					});
+		// 				}
+		// 			} else if (res.cancel) {
+		// 				uni.removeStorageSync('HistoryPush');
+		// 				me.data.type_id = params.key;
+		// 				if (params.key == 4) {
+		// 					uni.redirectTo({ url: 'activity' });
+		// 				} else if (params.key == 5) {
+		// 					uni.redirectTo({ url: 'pack' });
+		// 				} else {
+		// 					uni.setNavigationBarTitle({
+		// 						title: title
+		// 					});
+		// 				}
+		// 			}
+		// 		}
+		// 	});
+		// } else {
+		// 	me.data.type_id = params.key;
+		// 	if (params.key == 4) {
+		// 		uni.redirectTo({ url: 'activity' });
+		// 	} else if (params.key == 5) {
+		// 		uni.redirectTo({ url: 'pack' });
+		// 	} else {
+		// 		uni.setNavigationBarTitle({
+		// 			title: title
+		// 		});
+		// 	}
+		// }
+		me.data.type_id = params.key;
+		if (params.key == 4) {
+			uni.redirectTo({ url: 'activity' });
+		} else if (params.key == 5) {
+			uni.redirectTo({ url: 'pack' });
 		} else {
-			me.data.type_id = params.key;
-			if (params.key == 4) {
-				uni.redirectTo({ url: 'activity' });
-			} else if (params.key == 5) {
-				uni.redirectTo({ url: 'pack' });
-			} else {
-				uni.setNavigationBarTitle({
-					title: title
-				});
-			}
+			uni.setNavigationBarTitle({
+				title: title
+			});
 		}
 	},
 	onUnload() {},
@@ -193,7 +203,7 @@ export default {
 		},
 		// 标记内容未上传
 		markPush() {
-			this.saveData();
+			// this.saveData();
 			this.unPush = true;
 		},
 		// 点击取消返回
