@@ -26,16 +26,16 @@
 				<view style="width: 250upx; text-align: right;">￥{{ summmmm / 100 }}</view>
 				<view class="black" style="height: 15upx;"></view>
 			</view>
-			<view class="shangping-heji">
+<!-- 			<view class="shangping-heji">
 				<view style="width: 350upx;">快递费用</view>
 				<view style="width: 250upx; text-align: right;">0</view>
 				<view class="black" style="height: 15upx;"></view>
-			</view>
-			<view class="shangping-heji" style="border-bottom: 0px;">
+			</view> -->
+			<!-- <view class="shangping-heji" style="border-bottom: 0px;">
 				<view style="width: 350upx;">费用合计</view>
 				<view style="width: 250upx; text-align: right;">￥{{ summmmm / 100 }}</view>
 				<view class="black" style="height: 15upx;"></view>
-			</view>
+			</view> -->
 			<view class="black" style="background-color:#f0f0f0; height: 50upx;"></view>
 		</view>
 		<view class="black" style="background-color:#f0f0f0; height: 50upx; font-size: 30upx; text-align: center;">填写收货信息</view>
@@ -84,6 +84,7 @@ export default {
 				me.failWarn('收货地址必填！');
 			} else {
 				let num = me.buygoods.length;
+				me.data.goods=[]
 				for (let i = 0; i < num; i++) {
 					if (me.buygoods[i].buy_number > 0) {
 						me.data.goods.push(me.buygoods[i]);
@@ -222,6 +223,7 @@ export default {
 
 /* 商品名称 */
 .item-name {
+	/* padding-right: 20%; */
 	width: 100%;
 	overflow: hidden;
 	text-align: center;
@@ -231,13 +233,14 @@ export default {
 
 /* 商品价格 */
 .item-danjian {
-	width: 255upx;
+	width: 200upx;
+	/* padding-right: 55upx; */
 	overflow: hidden;
 	line-height: 56upx;
 	text-overflow: ellipsis;
 }
 
-/* 商品总数 */
+/* 商品剩余 */
 .item-sum {
 	width: 150upx;
 	overflow: hidden;
@@ -245,8 +248,9 @@ export default {
 	text-overflow: ellipsis;
 }
 
-/* 剩余guige */
+/* 规格 */
 .item-guige {
+	padding-right: 55upx;
 	width: 150upx;
 	overflow: hidden;
 	line-height: 56upx;
