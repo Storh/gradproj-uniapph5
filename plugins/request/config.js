@@ -113,10 +113,10 @@ function toLogin() {
 	uni.removeStorageSync('webToken');
 	uni.removeStorageSync('userData');
 	// 获取当前页面路径
-	const pages = getCurrentPages()
+	// const pages = getCurrentPages()
 	// console.log(pages)
-	const route = pages[pages.length - 1].route
-	const fullPath = pages[pages.length - 1].$route.fullPath
+	// const route = pages[pages.length - 1].route
+	// const fullPath = pages[pages.length - 1].$route.fullPath
 	// console.log(route)
 	// 跳转提醒
 	uni.showModal({
@@ -126,8 +126,8 @@ function toLogin() {
 		confirmColor: "#3CC51F",
 		success: function() {
 			// 设置跳转路由
-			uni.setStorageSync("redirectUrl", fullPath);
-			uni.setStorageSync("redirectRoute", route);
+			// uni.setStorageSync("redirectUrl", fullPath);
+			// uni.setStorageSync("redirectRoute", route);
 			uni.reLaunch({
 				url: "/pages/login/login"
 			})
