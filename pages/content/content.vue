@@ -128,10 +128,12 @@
 			};
 		},
 		onPullDownRefresh() {
-			// console.log('refresh');
-			this.loadGetInfo()
+			var me=this
 			setTimeout(function() {
 				uni.stopPullDownRefresh();
+				uni.redirectTo({
+				    url: '/pages/content/content?contentId=' + me.content_id + '&typeId=' + me.contentinfo.type_id
+				});
 			}, 1000);
 		},
 		methods: {
