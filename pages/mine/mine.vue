@@ -143,7 +143,7 @@
 		onLoad() {
 			// 获取用户信息
 			this.userinfo = uni.getStorageSync('userData');
-			// this.managecomping()
+			this.managecomping()
 		}
 	};
 </script>
