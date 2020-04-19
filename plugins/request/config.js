@@ -14,7 +14,8 @@ export const globalInterceptor = {
  */
 export const config = {
 	// baseURL: "http://39.105.169.18:7300/mock/5db865ea4be0621d2109ae8a",
-	baseURL: "http://localhost:7001",
+	// baseURL: "http://localhost:7001",
+	baseURL:'http://water.glasssoda.cn:7001',
 	// baseURL: "http://www.chinaclick.com.cn/ailin",
 	// baseURL: "http://www.chinaclick.com.cn/ailin_test",
 	withCredentials: true,

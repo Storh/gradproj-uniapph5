@@ -18,7 +18,7 @@ Vue.config.productionTip = false
 // Vue.prototype.DevSerUrl = 'http://192.168.16.15:8080/ailin/serve'
 Vue.prototype.DevSerUrl = 'http://www.chinaclick.com.cn/ailin'
 // 毕设专用接口
-Vue.prototype.GradProUrl = 'http://localhost:7001'
+Vue.prototype.GradProUrl = 'http://water.glasssoda.cn:7001'
 Vue.prototype.WebUrl = 'http://localhost:8080'
 
 Vue.prototype.ManagePading = '@Dm1n:'
