@@ -13,6 +13,7 @@
 			<input class="link_external_name" v-model="data.link_external_name" placeholder="可命名链接" @blur="markPush" />
 		</view>
 		<view class="pictures">
+			<image-cropper @confirm="confirm" :addrobj="sendPoint" @cancel="cancel"></image-cropper>
 			<block v-for="(item, index) in data.images" :key="index">
 				<view class="pictures-item">
 					<image mode="aspectFill" :src="item.src"></image>
@@ -65,6 +66,7 @@
 </template>
 
 <script>
+import ImageCropper from "@/components/ailin-image-cropper.vue";
 import Base from '../../api/base';
 import Content from '../../api/content';
 export default {
@@ -73,6 +75,11 @@ export default {
 			format: true
 		});
 		return {
+			doCrop:0,//要被更换的
+			sendPoint:{},
+			getCanvPoint: new Array(), //识别结果数组
+			rowImage: [],
+			tempFilePath: "",
 			// 是否显示上传按键
 			addImgBtn: true,
 			lab: '',
@@ -118,6 +125,7 @@ export default {
 		Content.getDetail(params.id).then(res => {
 			this.data.title = res.data.data.title;
 			this.data.images = res.data.data.images;
+			this.rowImage=res.data.data.images
 			this.data.content = res.data.data.content;
 			this.data.show_type = res.data.data.show_type;
 			this.lab = res.data.data.keyword;
@@ -239,16 +247,164 @@ export default {
 				url: 'keyword?lab=' + this.lab
 			});
 		},
+		confirm(e) {
+		  this.tempFilePath = "";
+		  // console.log(e.detail.tempFilePath);
+		  this.compressImg(e.detail.tempFilePath);
+		  // this.cropFilePath = e.detail.tempFilePath
+		},
+		cancel() {
+			this.sendPoint={}
+			this.doCrop=0
+			// this.tempFilePath = "";
+		  console.log("canceled");
+		},
+		// 图片裁剪
+		imageCropper(index) {
+		  // console.log(index)
+		  const imgObj = this.rowImage[index];
+		  this.doCrop=index+1
+		  // console.log(imgObj)
+		  // this.tempFilePath = imgObj.path;
+		  this.getCropperAdd(imgObj.path);
+		},
+		//获取裁剪位置
+		getCropperAdd(imageObj) {
+		  var me = this;
+		  // 新建图片对象
+		  var quality = 0.92;
+		  var img = new Image();
+		  img.src = imageObj;
+		  img.onload = function() {
+		    var that = this;
+		    // 图片识别
+		    var cropCanvas = document.createElement("canvas");
+		    var cropCtx = cropCanvas.getContext("2d");
+		    // 创建属性节点
+		    var cropW = document.createAttribute("width");
+		    cropW.nodeValue = 10;
+		    var cropH = document.createAttribute("height");
+		    cropH.nodeValue = 10;
+		    cropCanvas.setAttributeNode(cropW);
+		    cropCanvas.setAttributeNode(cropH);
+		    // 将图片压缩为10*10
+		    cropCtx.drawImage(that, 0, 0, 10, 10);
+		    const corpArr = cropCtx.getImageData(0, 0, 10, 10).data;
+		    var beforBinary = [];
+		    // 整体灰度值
+		    var graySum = 0;
+		    for (let i = 0; i < 100; i++) {
+		      // 获取rgba信息
+		      let item = corpArr.slice(i * 4, i * 4 + 4);
+		      // 处理为灰度信息
+		      let grayPoint = Math.floor(
+		        item[0] * 0.299 + item[1] * 0.578 + item[2] * 0.114
+		      );
+		      graySum += grayPoint;
+		      beforBinary.push(grayPoint);
+		    }
+		    const grayAvg = Math.floor(graySum / 100);
+		    let whitePoint = 0;
+		    const afterBinary = beforBinary.map(point => {
+		      if (point > grayAvg) {
+		        whitePoint++;
+		        return 0;
+		      }
+		      return 1;
+		    });
+		    // console.log(afterBinary);
+		    var lessPoint = whitePoint > 50 ? 1 : 0;
+		    // 分割为数组
+		    var lessArea = new Array();
+		    for (let i = 0; i < 10; i++) {
+		      lessArea.push(afterBinary.slice(i * 10, i * 10 + 10));
+		    }
+		    console.log(lessArea);
+		    var areaNum = me.numIsArea(lessArea, lessPoint);
+		
+		    // console.log(areaNum);
+		    console.log(me.getCanvPoint);
+			me.setSendPoint(me.getCanvPoint,imageObj)
+			
+		    // var base64 = detcanvas.toDataURL('image/jpeg', quality);
+		    // me.upLoadImg(base64);
+		  };
+		},
+		setSendPoint(arr,url){
+			let sendArea=arr[0]
+			arr.forEach(item=>{
+				if(item.sum>sendArea.sum)
+				sendArea=item
+			})
+			this.sendPoint={
+				src:url,
+				addr:sendArea
+				}
+				// console.log(sendPoint)
+			// this.tempFilePath = url;
+		},
+		numIsArea(grid, point) {
+		  var count = 0; //区域总数
+		  var me = this;
+		  function traverseIsArea(i, j, grid) {
+		    var stack = [];
+		    stack.push([i, j]);
+		    while (stack.length) {
+		      var pair = stack.pop();
+		      i = pair[0];
+		      j = pair[1];
+		      if (
+		        i >= 0 &&
+		        i < grid.length &&
+		        j >= 0 &&
+		        j < grid[0].length &&
+		        grid[i][j] === point
+		      ) {
+		        grid[i][j] = "2";
+		        stack.push([i + 1, j]);
+		        stack.push([i - 1, j]);
+		        stack.push([i, j + 1]);
+		        stack.push([i, j - 1]);
+		        me.getCanvPoint[count].sum++;
+		        if (j < me.getCanvPoint[count].lr) me.getCanvPoint[count].lr = j;
+		        if (j > me.getCanvPoint[count].rr) me.getCanvPoint[count].rr = j;
+		        if (i < me.getCanvPoint[count].tc) me.getCanvPoint[count].tc = i;
+		        if (i > me.getCanvPoint[count].bc) me.getCanvPoint[count].bc = i;
+		      }
+		    }
+		  }
+		
+		  for (var i = 0; i < grid.length; i++) {
+		    for (var j = 0; j < grid[0].length; j++) {
+		      if (grid[i][j] === point) {
+		        // 焦点面积
+		        // console.log(count)
+		        me.getCanvPoint[count] = {
+		          sum: 0, //区域面积
+		          lr: j, //最左角列标
+		          rr: j, //最右角列标
+		          tc: i, //最上行标
+		          bc: i //最下行标
+		        };
+		        traverseIsArea(i, j, grid);
+		        count++;
+		      }
+		    }
+		  }
+		  return count;
+		},
 		// 移除预览图片
 		delImg(e) {
 			let imgindex = e.currentTarget.dataset.index;
 			this.data.images.splice(imgindex, 1);
+			 this.rowImage.splice(imgindex, 1);
 			this.addImgBtn = true;
 		},
 		chooseImg() {
 			uni.chooseImage({
 				count: 1,
 				success: res => {
+					  this.rowImage.push(res.tempFiles[0]); //保留原图片
 					// console.log(res);
 					this.checkImg(res.tempFiles[0]);
 				}
@@ -271,8 +427,12 @@ export default {
 					let item = {};
 					item.id = res.data.data.id;
 					item.src = res.data.data.src;
-					// console.log(item);
+					if(this.doCrop)
+					  {
+						  this.$set(this.data.images, (this.doCrop-1), item);
+					  }else{
 					this.data.images.push(item);
+					  }
 					if (this.data.images.length === 6) {
 						this.addImgBtn = false;
 					}
@@ -286,7 +446,10 @@ export default {
 						icon: 'none',
 						duration: 3000
 					});
-					this.data.images.pop();
+					if(!this.doCrop)
+					{
+								  this.data.images.pop();
+					}
 				});
 		},
 		compressImg(imageObj) {
