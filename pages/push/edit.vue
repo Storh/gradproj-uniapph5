@@ -70,6 +70,7 @@ import ImageCropper from "@/components/ailin-image-cropper.vue";
 import Base from '../../api/base';
 import Content from '../../api/content';
 export default {
+	components: { ImageCropper },
 	data() {
 		const currentDate = this.getDate({
 			format: true
