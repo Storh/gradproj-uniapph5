@@ -14,9 +14,10 @@
 			<input class="link_external_name" v-model="data.link_external_name" placeholder="命名外部链接" @blur="markPush" />
 		</view>
 		<view class="pictures">
+			<image-cropper :src="tempFilePath" @confirm="confirm" @cancel="cancel"></image-cropper>
 			<block v-for="(item, index) in data.images" :key="index">
 				<view class="pictures-item">
-					<image mode="aspectFill" :src="item.src"></image>
+					<image mode="aspectFill" :src="item.src" @tap="imageCropper(index)"></image>
 					<view :data-index="index" @tap="delImg"><ailin-icon class="delimg" iconId="#icon-fabu-off"></ailin-icon></view>
 				</view>
 			</block>
@@ -100,19 +101,24 @@
 </template>
 
 <script>
+import ImageCropper from "@/components/ailin-image-cropper.vue";
 import Base from '../../api/base';
 import Content from '../../api/content';
 import Pack from '../../api/info/pack';
 import yuDatetimePicker from '@/components/yu-datetime-picker/yu-datetime-picker.vue';
 export default {
 	components: {
-		yuDatetimePicker
+		yuDatetimePicker,
+		ImageCropper
 	},
 	data() {
 		const currentDate = this.getDate({
 			format: true
 		});
 		return {
+			doCrop:0,//要被更换的
+			rowImage: [],
+			tempFilePath: "",
 			// 是否在修改物品信息
 			editeditGoodsList: false,
 			eddddf2knum: undefined,
@@ -156,6 +162,7 @@ export default {
 		// 获取该记录的详细情况
 		this.data.content_id = params.id;
 		Pack.getPackDetail(params.id).then(res => {
+			this.rowImage=[...res.data.data.images]
 			this.data.title = res.data.data.title;
 			this.data.images = res.data.data.images;
 			this.data.content = res.data.data.content;
@@ -308,18 +315,44 @@ export default {
 				url: '/pages/push/keyword?lab=' + this.data.keyword
 			});
 		},
+		confirm(e) {
+				  this.tempFilePath = "";
+				  this.compressImg(e.detail.tempFilePath);
+				},
+				cancel() {
+					this.tempFilePath = "";
+					this.doCrop=0
+				},
+				// 图片裁剪
+				imageCropper(index) {
+						 const imgObj = this.rowImage[index];
+						 this.doCrop=index+1
+						 if(imgObj.path)
+						 {
+						 					  this.tempFilePath = imgObj.path;
+						 }else{
+						 					  this.doCrop=0
+						 					  uni.showToast({
+						 					  	title: '已上传的图片，无法裁剪',
+						 					  	icon: 'none',
+						 					  	duration: 3000
+						 					  });
+						 }
+						},
 		// 移除预览图片
 		delImg(e) {
 			let imgindex = e.currentTarget.dataset.index;
 			this.data.images.splice(imgindex, 1);
+			this.rowImage.splice(imgindex, 1);
 			this.addImgBtn = true;
 		},
 		chooseImg() {
 			uni.chooseImage({
-				count: 1,
-				success: res => {
-					this.checkImg(res.tempFiles[0]);
-				}
+			  count: 1,
+			  success: res => {
+			this.rowImage.push(res.tempFiles[0]); //保留原图片
+			    this.checkImg(res.tempFiles[0]);
+			  }
 			});
 		},
 		checkImg(imgObj) {
@@ -339,7 +372,13 @@ export default {
 					let item = {};
 					item.id = res.data.data.id;
 					item.src = res.data.data.src;
-					this.data.images.push(item);
+					if(this.doCrop){
+						this.$set(this.data.images, (this.doCrop-1), item);
+						this.doCrop=0
+					}
+					else{
+						this.data.images.push(item);
+					}
 					if (this.data.images.length === 6) {
 						this.addImgBtn = false;
 					}
@@ -348,12 +387,19 @@ export default {
 				})
 				.catch(err => {
 					uni.hideLoading();
+					var title="上传失败，请重新选择图片"
+					if(this.doCrop){
+					this.doCrop=0
+					title="修改失败，请重新裁剪图片"
+					}
+					else{
+					this.rowImage.pop();
+					}
 					uni.showToast({
-						title: '上传失败，请重新选择图片',
-						icon: 'none',
-						duration: 3000
+					title: title,
+					icon: "none",
+					duration: 3000
 					});
-					this.data.images.pop();
 				});
 		},
 		compressImg(imageObj) {
