@@ -93,7 +93,6 @@ export default {
   data() {
     return {
 		doCrop:0,//要被更换的
-	  sendPoint:{},
       getCanvPoint: new Array(), //识别结果数组
       rowImage: [],
       tempFilePath: "",
