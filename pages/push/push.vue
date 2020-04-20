@@ -123,17 +123,10 @@ export default {
     let title = "发布" + params.title;
     var me = this;
     me.data.type_id = params.key;
-    if (params.key == 4) {
-      uni.redirectTo({ url: "activity" });
-    } else if (params.key == 5) {
-      uni.redirectTo({ url: "pack" });
-    } else {
       uni.setNavigationBarTitle({
         title: title
       });
-    }
   },
-  onUnload() {},
   methods: {
     saveData() {
       uni.setStorageSync("HistoryPush", this.data);

@@ -107,9 +107,19 @@
 			toPushPage(e) {
 				var key = e.currentTarget.dataset.key;
 				var title = e.currentTarget.dataset.title;
-				uni.navigateTo({
-					url: '../push/push?key=' + key + '&title=' + title
-				});
+				if (key == 4) {
+					uni.navigateTo({
+						url: '../push/activity'
+					});
+				} else if (key == 5) {
+					uni.navigateTo({
+						url: '../push/pack'
+					});
+				} else {
+					uni.navigateTo({
+						url: '../push/push?key=' + key + '&title=' + title
+					});
+				}
 				this.push_info_open = false;
 			},
 			// 发布按键按下后的展开实现
@@ -180,14 +190,14 @@
 		font-size: 41upx;
 	}
 
-	.mid{
+	.mid {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		position: relative;
 		top: -10upx;
 	}
-	
+
 	.tabbar-mid-push {
 		position: relative;
 		top: -15upx;
@@ -199,12 +209,12 @@
 		width: 80upx; */
 	}
 
-	.mid-text{
+	.mid-text {
 		position: relative;
 		font-size: 20upx;
 		top: -19upx;
 	}
-	
+
 	.push-info-list-page {
 		background-color: #ffffff;
 		z-index: 3;
