@@ -72,9 +72,9 @@
 				type: Boolean,
 				default: false,
 			},
-			// src: {
-			// 	type: String,
-			// },
+			src: {
+				type: String,
+			},
 			showResetBtn: {
 				type: Boolean,
 				default: true,
@@ -83,16 +83,17 @@
 				type: Boolean,
 				default: true,
 			},
-			addrobj: {
-				type: Object,
-			}
+			// addrobj: {
+			// 	type: Object,
+			// }
 		},
 		data() {
 			const sysInfo = uni.getSystemInfoSync();
 			const pixelRatio = sysInfo.pixelRatio
 			return {
-				src: '',
+				// src: '',
 				addr: {},
+				getCanvPoint: new Array(), //识别结果数组
 				show: false,
 				scale: 1, //缩放比
 				rotate: 0, //旋转
@@ -117,27 +118,19 @@
 			}
 		},
 		watch: {
-			// src(val) {
-			// 	// console.log(val)
-			// 	if (val) {
-			// 	console.log(val)
-			// 		this.init()
-			// 	}
-			// },
+			src(val) {
+				// console.log(val)
+				if (val) {
+					console.log(val)
+					this.init()
+				}
+			},
 			show(val) {
 				if (!val) {
 					this.src = ''
-					this.addr = {}
+					// this.addr = {}
 				}
 			},
-			addrobj(val) {
-				if (val.src) {
-					console.log(val)
-					this.src = val.src
-					this.addr = val.addr
-					this.init()
-				}
-			}
 		},
 		computed: {
 			containerTop() {
@@ -180,29 +173,6 @@
 			},
 		},
 		methods: {
-			setPoint(ratio, point) {
-				// lr: j, //最左角列标
-				// rr: j, //最右角列标
-				// tc: i, //最上行标
-				// bc: i //最下行标
-				let width
-				let height
-				if (ratio >= 1) {
-					width = this.windowWidth
-					height = this.windowWidth / ratio
-				} else {
-					width = this.windowWidth * ratio
-					height = this.windowWidth
-				}
-				console.log(point)
-				console.log(width, height)
-				this.cropW = width * (point.rr - point.lr + 1) / 10
-				this.cropH = height * (point.bc - point.tc + 1) / 10
-				console.log(this.cropW, this.cropH)
-				this.cropOffsertX = width * point.lr / 10
-				this.cropOffsertY = height * point.tc / 10
-				console.log(this.cropOffsertX, this.cropOffsertY)
-			},
 			rotateHandler() {
 				if (this.rotate == 3) {
 					this.rotate = 0;
@@ -213,8 +183,6 @@
 			init() {
 				this.rotate = 0;
 				this.scale = 1;
-				// this.cropW = this.cropWidth
-				// this.cropH = this.cropHeight
 				uni.showLoading({
 					title: '图片加载中...',
 				})
@@ -236,15 +204,10 @@
 						success: (res) => {
 							_this.imageRealWidth = res.width
 							_this.imageRealHeight = res.height
-							// _this.setPoint((res.width / res.height), _this.addr)
-							// _this.cropOffsertX = _this.windowWidth / 2 - _this.cropW / 2
-							// _this.cropOffsertY = _this.windowHeight / 2 - _this.cropH / 2
 							_this.show = true
 
 							_this.$nextTick(() => {
-								// _this.x = _this.windowWidth / 2 - _this.imageWidth / 2
-								// _this.y = _this.containerHeight / 2 - _this.imageHeight / 2
-								_this.setPoint((res.width / res.height), _this.addr)
+								_this.getCropperAdd((res.width / res.height), src)
 								_this.x = 0
 								_this.y = 0
 							});
@@ -256,7 +219,135 @@
 						}
 					})
 				});
+			},
+			//获取裁剪位置
+			getCropperAdd(ratio, imageObj) {
+				var me = this;
+				me.getCanvPoint = new Array()
+				// 新建图片对象
+				var img = new Image();
+				img.src = imageObj;
+				img.onload = function() {
+					var that = this;
+					// 图片识别
+					var cropCanvas = document.createElement("canvas");
+					var cropCtx = cropCanvas.getContext("2d");
+					// 创建属性节点
+					var cropCanvW = document.createAttribute("width");
+					cropCanvW.nodeValue = 10;
+					var cropCanvH = document.createAttribute("height");
+					cropCanvH.nodeValue = 10;
+					cropCanvas.setAttributeNode(cropCanvW);
+					cropCanvas.setAttributeNode(cropCanvH);
+					// 将图片压缩为10*10
+					cropCtx.drawImage(that, 0, 0, 10, 10);
+					const corpArr = cropCtx.getImageData(0, 0, 10, 10).data;
+					var beforBinary = [];
+					// 整体灰度值
+					var graySum = 0;
+					for (let i = 0; i < 100; i++) {
+						// 获取rgba信息
+						let item = corpArr.slice(i * 4, i * 4 + 4);
+						// 处理为灰度信息
+						let grayPoint = Math.floor(
+							item[0] * 0.299 + item[1] * 0.578 + item[2] * 0.114
+						);
+						graySum += grayPoint;
+						beforBinary.push(grayPoint);
+					}
+					const grayAvg = Math.floor(graySum / 100);
+					let whitePoint = 0;
+					const afterBinary = beforBinary.map(point => {
+						if (point > grayAvg) {
+							whitePoint++;
+							return 0;
+						}
+						return 1;
+					});
+					// console.log(afterBinary);
+					var lessPoint = whitePoint > 50 ? 1 : 0;
+					// 分割为数组
+					var lessArea = new Array();
+					for (let i = 0; i < 10; i++) {
+						lessArea.push(afterBinary.slice(i * 10, i * 10 + 10));
+					}
+					console.log(lessArea);
+					var addrPoint = me.numIsArea(lessArea, lessPoint);
 
+					let width
+					let height
+					if (ratio >= 1) {
+						width = me.windowWidth
+						height = me.windowWidth / ratio
+					} else {
+						width = me.windowWidth * ratio
+						height = me.windowWidth
+					}
+					console.log(addrPoint)
+					console.log(width, height)
+					me.cropW = width * (addrPoint.rr - addrPoint.lr + 1) / 10
+					me.cropH = height * (addrPoint.bc - addrPoint.tc + 1) / 10
+					console.log(me.cropW, me.cropH)
+					me.cropOffsertX = width * addrPoint.lr / 10
+					me.cropOffsertY = height * addrPoint.tc / 10
+					console.log(me.cropOffsertX, me.cropOffsertY)
+				};
+			},
+			numIsArea(grid, point) {
+				var count = 0; //区域总数
+				var me = this;
+
+				function traverseIsArea(i, j, grid) {
+					var stack = [];
+					stack.push([i, j]);
+					while (stack.length) {
+						var pair = stack.pop();
+						i = pair[0];
+						j = pair[1];
+						if (
+							i >= 0 &&
+							i < grid.length &&
+							j >= 0 &&
+							j < grid[0].length &&
+							grid[i][j] === point
+						) {
+							grid[i][j] = "2";
+							stack.push([i + 1, j]);
+							stack.push([i - 1, j]);
+							stack.push([i, j + 1]);
+							stack.push([i, j - 1]);
+							me.getCanvPoint[count].sum++;
+							if (j < me.getCanvPoint[count].lr) me.getCanvPoint[count].lr = j;
+							if (j > me.getCanvPoint[count].rr) me.getCanvPoint[count].rr = j;
+							if (i < me.getCanvPoint[count].tc) me.getCanvPoint[count].tc = i;
+							if (i > me.getCanvPoint[count].bc) me.getCanvPoint[count].bc = i;
+						}
+					}
+				}
+
+				for (var i = 0; i < grid.length; i++) {
+					for (var j = 0; j < grid[0].length; j++) {
+						if (grid[i][j] === point) {
+							// 焦点面积
+							me.getCanvPoint[count] = {
+								sum: 0, //区域面积
+								lr: j, //最左角列标
+								rr: j, //最右角列标
+								tc: i, //最上行标
+								bc: i //最下行标
+							};
+							traverseIsArea(i, j, grid);
+							count++;
+						}
+					}
+				}
+				let sendArea = me.getCanvPoint[0]
+				me.getCanvPoint.forEach(item => {
+					if (item.sum > sendArea.sum)
+						sendArea = item
+				})
+
+				return sendArea;
 			},
 			cancel() {
 				this.show = false
