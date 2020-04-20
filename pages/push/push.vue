@@ -280,7 +280,7 @@ export default {
 			  this.doCrop=0
 		title="修改失败，请重新裁剪图片"
 		}else{
-		this.data.images.pop();
+		this.rowImage.pop();
 		  }
           uni.showToast({
             title: title,

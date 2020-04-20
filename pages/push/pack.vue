@@ -17,7 +17,7 @@
 			<image-cropper :src="tempFilePath" @confirm="confirm" @cancel="cancel"></image-cropper>
 			<block v-for="(item, index) in data.images" :key="index">
 				<view class="pictures-item">
-					<image mode="aspectFill" :src="item.src"></image>
+					<image mode="aspectFill" :src="item.src" @tap="imageCropper(index)"></image>
 					<view :data-index="index" @tap="delImg"><ailin-icon class="delimg" iconId="#icon-fabu-off"></ailin-icon></view>
 				</view>
 			</block>
@@ -117,7 +117,6 @@ export default {
 		});
 		return {
 			doCrop:0,//要被更换的
-			getCanvPoint: new Array(), //识别结果数组
 			rowImage: [],
 			tempFilePath: "",
 			// 是否在修改物品信息
@@ -159,11 +158,6 @@ export default {
 		uni.setNavigationBarTitle({
 			title: '发布团购'
 		});
-		var me = this;
-		let hasHistoryData = uni.getStorageSync('HistoryPush');
-		if (hasHistoryData) {
-			me.data = hasHistoryData;
-		}
 	},
 	onUnload() {},
 	methods: {
@@ -284,7 +278,6 @@ export default {
 		},
 		// 标记内容未上传
 		markPush() {
-			this.saveData();
 			this.unPush = true;
 		},
 		// 点击取消返回
@@ -341,14 +334,16 @@ export default {
 		delImg(e) {
 			let imgindex = e.currentTarget.dataset.index;
 			this.data.images.splice(imgindex, 1);
+			this.rowImage.splice(imgindex, 1);
 			this.addImgBtn = true;
 		},
 		chooseImg() {
 			uni.chooseImage({
-				count: 1,
-				success: res => {
-					this.checkImg(res.tempFiles[0]);
-				}
+			  count: 1,
+			  success: res => {
+			    this.rowImage.push(res.tempFiles[0]); //保留原图片
+			    this.checkImg(res.tempFiles[0]);
+			  }
 			});
 		},
 		checkImg(imgObj) {
@@ -389,7 +384,7 @@ export default {
 						  this.doCrop=0
 					title="修改失败，请重新裁剪图片"
 					}else{
-					this.data.images.pop();
+					this.rowImage.pop();
 					  }
 					uni.showToast({
 						title: title,
