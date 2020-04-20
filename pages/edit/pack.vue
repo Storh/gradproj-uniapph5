@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import ImageCropper from "@/components/ailin-image-cropper.vue";
+import ImageCropper from '@/components/ailin-image-cropper.vue';
 import Base from '../../api/base';
 import Content from '../../api/content';
 import Pack from '../../api/info/pack';
@@ -116,9 +116,9 @@ export default {
 			format: true
 		});
 		return {
-			doCrop:0,//要被更换的
+			doCrop: 0, //要被更换的
 			rowImage: [],
-			tempFilePath: "",
+			tempFilePath: '',
 			// 是否在修改物品信息
 			editeditGoodsList: false,
 			eddddf2knum: undefined,
@@ -162,7 +162,7 @@ export default {
 		// 获取该记录的详细情况
 		this.data.content_id = params.id;
 		Pack.getPackDetail(params.id).then(res => {
-			this.rowImage=[...res.data.data.images]
+			this.rowImage = [...res.data.data.images];
 			this.data.title = res.data.data.title;
 			this.data.images = res.data.data.images;
 			this.data.content = res.data.data.content;
@@ -316,29 +316,28 @@ export default {
 			});
 		},
 		confirm(e) {
-				  this.tempFilePath = "";
-				  this.compressImg(e.detail.tempFilePath);
-				},
-				cancel() {
-					this.tempFilePath = "";
-					this.doCrop=0
-				},
-				// 图片裁剪
-				imageCropper(index) {
-						 const imgObj = this.rowImage[index];
-						 this.doCrop=index+1
-						 if(imgObj.path)
-						 {
-						 					  this.tempFilePath = imgObj.path;
-						 }else{
-						 					  this.doCrop=0
-						 					  uni.showToast({
-						 					  	title: '已上传的图片，无法裁剪',
-						 					  	icon: 'none',
-						 					  	duration: 3000
-						 					  });
-						 }
-						},
+			this.tempFilePath = '';
+			this.compressImg(e.detail.tempFilePath);
+		},
+		cancel() {
+			this.tempFilePath = '';
+			this.doCrop = 0;
+		},
+		// 图片裁剪
+		imageCropper(index) {
+			const imgObj = this.rowImage[index];
+			this.doCrop = index + 1;
+			if (imgObj.path) {
+				this.tempFilePath = imgObj.path;
+			} else {
+				this.doCrop = 0;
+				uni.showToast({
+					title: '已上传的图片，无法裁剪',
+					icon: 'none',
+					duration: 3000
+				});
+			}
+		},
 		// 移除预览图片
 		delImg(e) {
 			let imgindex = e.currentTarget.dataset.index;
@@ -348,11 +347,11 @@ export default {
 		},
 		chooseImg() {
 			uni.chooseImage({
-			  count: 1,
-			  success: res => {
-			this.rowImage.push(res.tempFiles[0]); //保留原图片
-			    this.checkImg(res.tempFiles[0]);
-			  }
+				count: 1,
+				success: res => {
+					this.rowImage.push(res.tempFiles[0]); //保留原图片
+					this.checkImg(res.tempFiles[0]);
+				}
 			});
 		},
 		checkImg(imgObj) {
@@ -372,11 +371,10 @@ export default {
 					let item = {};
 					item.id = res.data.data.id;
 					item.src = res.data.data.src;
-					if(this.doCrop){
-						this.$set(this.data.images, (this.doCrop-1), item);
-						this.doCrop=0
-					}
-					else{
+					if (this.doCrop) {
+						this.$set(this.data.images, this.doCrop - 1, item);
+						this.doCrop = 0;
+					} else {
 						this.data.images.push(item);
 					}
 					if (this.data.images.length === 6) {
@@ -387,18 +385,17 @@ export default {
 				})
 				.catch(err => {
 					uni.hideLoading();
-					var title="上传失败，请重新选择图片"
-					if(this.doCrop){
-					this.doCrop=0
-					title="修改失败，请重新裁剪图片"
-					}
-					else{
-					this.rowImage.pop();
+					var title = '上传失败，请重新选择图片';
+					if (this.doCrop) {
+						this.doCrop = 0;
+						title = '修改失败，请重新裁剪图片';
+					} else {
+						this.rowImage.pop();
 					}
 					uni.showToast({
-					title: title,
-					icon: "none",
-					duration: 3000
+						title: title,
+						icon: 'none',
+						duration: 3000
 					});
 				});
 		},
@@ -610,7 +607,8 @@ export default {
 	text-align: right;
 	position: absolute;
 	right: 50upx;
-}.additeninfo {
+}
+.additeninfo {
 	z-index: 6;
 	width: 100%;
 	height: 100%;
@@ -636,11 +634,11 @@ export default {
 	align-items: center;
 	display: flex;
 }
-.item-info{
+.item-info {
 	display: flex;
 	flex-direction: column;
 }
-.price{
+.price {
 	display: flex;
 	flex-direction: row;
 	height: 40upx;

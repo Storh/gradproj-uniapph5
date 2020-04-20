@@ -14,7 +14,7 @@
 		</view>
 		<view class="pictures">
 			<image-cropper :src="tempFilePath" @confirm="confirm" @cancel="cancel"></image-cropper>
-			<block v-for="(item, index) in data.images" :key="index" >
+			<block v-for="(item, index) in data.images" :key="index">
 				<view class="pictures-item">
 					<image mode="aspectFill" :src="item.src" @tap="imageCropper(index)"></image>
 					<view :data-index="index" @tap="delImg"><ailin-icon class="delimg" iconId="#icon-fabu-off"></ailin-icon></view>
@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import ImageCropper from "@/components/ailin-image-cropper.vue";
+import ImageCropper from '@/components/ailin-image-cropper.vue';
 import Base from '../../api/base';
 import Content from '../../api/content';
 import Activity from '../../api/info/activity';
@@ -78,9 +78,9 @@ export default {
 			format: true
 		});
 		return {
-			doCrop:0,//要被更换的
+			doCrop: 0, //要被更换的
 			rowImage: [],
-			tempFilePath: "",
+			tempFilePath: '',
 			// 是否显示上传按键
 			addImgBtn: true,
 			lab: '',
@@ -195,19 +195,19 @@ export default {
 			});
 		},
 		confirm(e) {
-				  this.tempFilePath = "";
-				  this.compressImg(e.detail.tempFilePath);
-				},
-				cancel() {
-					this.tempFilePath = "";
-					this.doCrop=0
-				},
-				// 图片裁剪
-				imageCropper(index) {
-				  const imgObj = this.rowImage[index];
-				  this.doCrop=index+1
-		this.tempFilePath = imgObj.path;
-				},
+			this.tempFilePath = '';
+			this.compressImg(e.detail.tempFilePath);
+		},
+		cancel() {
+			this.tempFilePath = '';
+			this.doCrop = 0;
+		},
+		// 图片裁剪
+		imageCropper(index) {
+			const imgObj = this.rowImage[index];
+			this.doCrop = index + 1;
+			this.tempFilePath = imgObj.path;
+		},
 		// 移除预览图片
 		delImg(e) {
 			let imgindex = e.currentTarget.dataset.index;
@@ -217,11 +217,11 @@ export default {
 		},
 		chooseImg() {
 			uni.chooseImage({
-			  count: 1,
-			  success: res => {
-			    this.rowImage.push(res.tempFiles[0]); //保留原图片
-			    this.checkImg(res.tempFiles[0]);
-			  }
+				count: 1,
+				success: res => {
+					this.rowImage.push(res.tempFiles[0]); //保留原图片
+					this.checkImg(res.tempFiles[0]);
+				}
 			});
 		},
 		checkImg(imgObj) {
@@ -241,13 +241,12 @@ export default {
 					let item = {};
 					item.id = res.data.data.id;
 					item.src = res.data.data.src;
-					if(this.doCrop)
-					  {
-						  this.$set(this.data.images, (this.doCrop-1), item);
-						  this.doCrop=0
-					  }else{
-					this.data.images.push(item);
-					  }
+					if (this.doCrop) {
+						this.$set(this.data.images, this.doCrop - 1, item);
+						this.doCrop = 0;
+					} else {
+						this.data.images.push(item);
+					}
 					if (this.data.images.length === 6) {
 						this.addImgBtn = false;
 					}
@@ -256,14 +255,13 @@ export default {
 				})
 				.catch(err => {
 					uni.hideLoading();
-					var title="上传失败，请重新选择图片"
-					  if(this.doCrop)
-					  {
-						  this.doCrop=0
-					title="修改失败，请重新裁剪图片"
-					}else{
-					this.rowImage.pop();
-					  }
+					var title = '上传失败，请重新选择图片';
+					if (this.doCrop) {
+						this.doCrop = 0;
+						title = '修改失败，请重新裁剪图片';
+					} else {
+						this.rowImage.pop();
+					}
 					uni.showToast({
 						title: title,
 						icon: 'none',

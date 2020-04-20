@@ -125,7 +125,7 @@ text {
 	width: 478upx;
 	height: 80upx;
 	font-size: 32upx;
-	color: #FFFFFF;
+	color: #ffffff;
 	text-align: center;
 }
 </style>
