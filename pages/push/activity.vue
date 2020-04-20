@@ -13,6 +13,7 @@
 			<input class="link_external_name" v-model="data.link_external_name" placeholder="可命名链接" @blur="markPush" />
 		</view>
 		<view class="pictures">
+			<image-cropper :src="tempFilePath" @confirm="confirm" @cancel="cancel"></image-cropper>
 			<block v-for="(item, index) in data.images" :key="index">
 				<view class="pictures-item">
 					<image mode="aspectFill" :src="item.src"></image>
@@ -61,13 +62,15 @@
 </template>
 
 <script>
+import ImageCropper from "@/components/ailin-image-cropper.vue";
 import Base from '../../api/base';
 import Content from '../../api/content';
 import Activity from '../../api/info/activity';
 import yuDatetimePicker from '@/components/yu-datetime-picker/yu-datetime-picker.vue';
 export default {
 	components: {
-		yuDatetimePicker
+		yuDatetimePicker,
+		ImageCropper
 	},
 
 	data() {
@@ -75,6 +78,10 @@ export default {
 			format: true
 		});
 		return {
+			doCrop:0,//要被更换的
+			getCanvPoint: new Array(), //识别结果数组
+			rowImage: [],
+			tempFilePath: "",
 			// 是否显示上传按键
 			addImgBtn: true,
 			lab: '',
@@ -197,6 +204,20 @@ export default {
 				url: 'keyword?lab=' + this.data.keyword
 			});
 		},
+		confirm(e) {
+				  this.tempFilePath = "";
+				  this.compressImg(e.detail.tempFilePath);
+				},
+				cancel() {
+					this.tempFilePath = "";
+					this.doCrop=0
+				},
+				// 图片裁剪
+				imageCropper(index) {
+				  const imgObj = this.rowImage[index];
+				  this.doCrop=index+1
+		this.tempFilePath = imgObj.path;
+				},
 		// 移除预览图片
 		delImg(e) {
 			let imgindex = e.currentTarget.dataset.index;
@@ -228,7 +249,13 @@ export default {
 					let item = {};
 					item.id = res.data.data.id;
 					item.src = res.data.data.src;
+					if(this.doCrop)
+					  {
+						  this.$set(this.data.images, (this.doCrop-1), item);
+						  this.doCrop=0
+					  }else{
 					this.data.images.push(item);
+					  }
 					if (this.data.images.length === 6) {
 						this.addImgBtn = false;
 					}
@@ -237,12 +264,19 @@ export default {
 				})
 				.catch(err => {
 					uni.hideLoading();
+					var title="上传失败，请重新选择图片"
+					  if(this.doCrop)
+					  {
+						  this.doCrop=0
+					title="修改失败，请重新裁剪图片"
+					}else{
+					this.data.images.pop();
+					  }
 					uni.showToast({
-						title: '上传失败，请重新选择图片',
+						title: title,
 						icon: 'none',
 						duration: 3000
 					});
-					this.data.images.pop();
 				});
 		},
 		compressImg(imageObj) {
